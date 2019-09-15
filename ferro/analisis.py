@@ -12,7 +12,6 @@ Diagrama del analisis:
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, os
-from scipy.signal import savgol_filter
 import pdb
 
 
@@ -73,6 +72,7 @@ def mag(A,B):
 
     # cerosP = A[mascara]
     magnetizacion = B[mascara]
+    print("magnetizacion")
     return np.mean(np.absolute(magnetizacion))
 
 
@@ -141,17 +141,16 @@ def main(archivos, color, medicion):
 
     # pdb.set_trace()
     # color = [i/cantidad for i in range(cantidad)]
-    archivos = (i for i in archivos if i.endswith('.csv'))
-    i=0
+    archivos = [i for i in archivos if i.endswith('.csv')]
+    datos = []
     for archivo in archivos:
-
         P, S, U, V = load(archivo)
         T = temp(V)
         if medicion == "medicion3":
             T = T * 10
         T = T + 22.
         # T_ = getT(V)
-        U = np.mean(U)
+        # U = np.mean(U)
         #Centro la figura
         P = P - np.mean(P)
         S = S - np.mean(S)
@@ -162,19 +161,21 @@ def main(archivos, color, medicion):
         mRot = 0
 
         np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
-        resultado = np.array([np.mean(V), T, U,  m])
+        # resultado = np.array([np.mean(V), T, m])
         # plt.ion()
 
-        print(f"{archivo[18:]} tiene resultado {resultado}")
+        # print(f"{archivo[18:]} tiene resultado {resultado}")
+        datos.append([T,m])
         # pdb.set_trace()
         # plt.plot(T, m, '.', c=(0.1, 0.1, color[i]))
-        i+=1
-        plt.plot(T, m, '.', c=color)
+        # plt.plot(T, m, '.', c=color)
         # plt.plot(U, m, '.', c='b')
 
+    return np.asarray(datos)
 
-    plt.xlabel('Temperatura (C)')
-    plt.ylabel('Magnetizacion')
+
+    # plt.xlabel('Temperatura (C)')
+    # plt.ylabel('Magnetizacion')
 
 for i in range(4):
     dir = "/home/marco/Documents/fac/labo4/ferro/mediciones/medicion" + str(i+1)
@@ -182,10 +183,16 @@ for i in range(4):
     print(f"mediciones de medicion{i+1}")
     colores = ['r','g','b','k']
     color = colores[i]
-    plt.ion()
-    main(archivos, color, "medicion" + str(i+1))
-plt.ioff()
-plt.show()
+
+    # plt.ion()
+    datosMT = main(archivos, color, "medicion" + str(i+1))
+
+    # para guardar salvo los datos en datosmt(medicion).npy
+    # np.savetxt(f"datosmt{i+1}.csv",datosMT,fmt='%1.4f', delimiter=',')
+
+print("completo")
+# plt.ioff()
+# plt.show()
 
 
 # plt.grid(True)
