@@ -4,4 +4,7 @@ barrido*
 *.npy
 *.py
 *~
-!/scripts
+/Piezo
+/termometria
+/ferro
+/libros
