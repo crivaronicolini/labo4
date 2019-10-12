@@ -2,9 +2,11 @@
 *.png
 barrido*
 *.npy
-*.py
+#*.py
 *~
 /Piezo
 /termometria
 /ferro
 /libros
+/pespecial
+/vacio
