@@ -2,6 +2,7 @@ from marco import experimento
 import numpy as np
 from lmfit import Model
 import matplotlib.pyplot as plt
+import pandas as pd
 # from uncertainties import unumpy as un
 
 
@@ -26,19 +27,44 @@ def make_params():
 #gamma =
 
 caliente = experimento('/home/marco/Documents/fac/labo4/vacio/', claves=['calentar', '.txt'])
+
 def DT_up(t,tau,A):
-    A*(1-np.exp(-t/tau))
+    return A*(1-np.exp(-t/tau))
+
+def DT_up_sin(t,tau):
+    return A*(1-np.exp(-t/tau))
+
+def trim(df):
+    Tinicial = df['Temperatura'].iloc[0]
+    _ = df[df['Temperatura'] >= Tinicial + 2.]
+    _.index = pd.RangeIndex(len(_.index))
+    return _, Tinicial
 
 for arch in caliente:
     print(arch)
     medicion = caliente.cargar_pd(arch)
+    medicion, Tinicial = trim(medicion)
     y = medicion['Temperatura']
     t = medicion['Tiempo']
+    Tfinal = y.iloc[-1]
+
     gmodel = Model(DT_up)
-    result = gmodel.fit(y, t=t , A=1, tau=1)
-    plt.plot(t,y,'.')
+    result = gmodel.fit(y, t=t , A=Tfinal - Tinicial, tau=300)
+    print(result.fit_report())
     plt.plot(t, result.best_fit)
+
+    # A = Tfinal
+    # gmodel = Model(DT_up_sin)
+    # result = gmodel.fit(y, t=t, tau=300)
+    # print(result.fit_report())
+    # plt.plot(t, result.best_fit)
+
+    plt.plot(t,y,'.')
+    plt.title(caliente.titular(arch))
     plt.show()
+
+    # plt.savefig(arch + '.png', dpi=300)
+    plt.clf()
 
 
 # frio = experimento('/home/marco/Documents/fac/labo4/vacio/', claves=['apagar', '.txt'])
