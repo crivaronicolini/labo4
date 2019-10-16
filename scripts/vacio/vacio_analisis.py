@@ -67,7 +67,7 @@ for arch in caliente:
     plt.clf()
 
 
-# frio = experimento('/home/marco/Documents/fac/labo4/vacio/', claves=['apagar', '.txt'])
+frio = experimento('/home/marco/Documents/fac/labo4/vacio/', claves=['apagar', '.txt'])
 # def DT_down(t,tau,A):
 #     A*np.exp(-t/tau)
 
